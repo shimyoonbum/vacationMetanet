@@ -1,0 +1,131 @@
+@charset "UTF-8";
+
+/* 태그 관련 */
+body{
+     box-sizing: border-box;
+     word-break : break-all;
+     background: #F6F6F6; 
+     padding-top : 75px;
+   }
+h2{text-align: center; padding : 30px 0px 10px 0px;}
+h3{text-align: center; padding : 30px 0px 0px 0px;}
+h4{text-align: center; padding : 30px 0px 0px 0px;}
+th{text-align: center !important; font-size : 14px;}
+td{text-align: center; font-size : 14px;}
+ul{font-weight:200;}
+h6{text-align:left; padding: 0px 0px 0px 10px;}
+
+.loginform {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 98%;
+    margin: 0 auto;
+	text-align:center; 
+	background:white; 
+	height : 320px; 
+	box-shadow: 5px 5px 5px;
+}
+
+/* 상단바 헤더로 정의해서 화면 고정 처리*/
+header{position : fixed; top : 0; left : 0; right : 0; z-index : 10;}
+
+/*상단 바 width:100%; position:fixed;*/
+#container {background: #FFF; display: flex; box-shadow: 0 1px 10px rgba(0,0,0,0.3);}
+
+#box-left {flex: 1; padding:10px 10px 10px 20px; font-size: 30px; }
+#box-center{flex: 3; text-align: center; padding:10px; text-transform: uppercase; }
+#box-right{flex: 1; text-align:right; padding: 10px 20px 10px 10px; }
+
+/*승인 페이지 텍스트와 버튼 위치 설정*/
+#container2 {background: #F6F6F6; display: flex; position:relative; height : 80px;}
+
+#main-left {flex: 4; position:absolute; bottom:10px;}
+#main-right{flex: 1; text-align:right;}
+
+.btn_class{background: #F6F6F6; display: block; position:relative; height : 65px; overflow:hidden;}
+
+#va_submit {float:left; font-size: 15px; padding : 10px;}
+#va_update {float:right; padding:10px;}
+#va_delete {float:right;  padding : 10px; }
+
+/* 취소 버튼 */
+.cancel{background:#CEF6F5; }
+.sidenav .closebtn{text-align:right; padding: 0px 25px 0px 0px; font-size: 36px; }
+
+/* 컨텐츠 
+#main{margin-top: 60px;}
+*/
+.mainpic{text-align : -webkit-center; padding-top:30px; background : #F2F2F2;}
+.mainpic2{text-align : -webkit-center; padding-top:10px; background : #F2F2F2;}
+
+/*대쉬 보드 정보 배치*/
+.maininfo{padding: 0px 0px 10px 0px; display:flex;}
+
+#info-left {flex: 1; text-align: center; padding:10px 10px 10px 10px; font-size: 30px; }
+#info-right{flex: 1; text-align : center; padding: 10px 10px 10px 10px; font-size: 30px;}
+
+.maintag{display:flex; padding : 10px 0px 10px 0px; background:darkgray; color:white;}
+
+#tag-left {flex: 1; text-align: center; font-size : x-large;}
+#tag-right{flex: 1; text-align: center; font-size : x-large;}
+
+
+/* 프로필 */
+.profile{height:20%; background:#CEF6F5;}
+.profileimg{text-align : -webkit-center; padding:30px 0px 30px 0px; background : #F2F2F2;}
+.imgli{width:70px;}
+.imgli2{width : 150px;}
+.imgtag{width:100%; border-radius:50%; margin-left:40px;}
+.imgtag2{width:50%; text-align:center;}
+.imgli3{width:170px;}
+.imgtag3{width:100%; margin-left:40px; margin-top:10px;}
+.profilename{margin: 10px 0px 0px 50px; font-weight:400; color:white;}
+.hello{margin: 30px 0px 0px 0px; background : #F2F2F2; font-weight:600; font-size:25px; color:black; font-family: 'Tomorrow', sans-serif; word-spacing:2px;}
+.hello2{margin: 30px 0px 0px 0px; background : #F2F2F2; font-weight:600; font-size:25px; color:black; font-family: 'Tomorrow', sans-serif; word-spacing:2px;}
+.helloprofile{margin: 5px 0px 30px 0px; background : #F2F2F2; font-weight:400; font-size:23px; color:Blue; font-family: 'Tomorrow', sans-serif; word-spacing:2px;}
+/* 사이드 바 */
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 11;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+  overflow-x: hidden;
+  transition: 0.2s;
+  color:black;
+  padding-top:0px;
+}
+
+.sidenav a {
+  padding: 20px 0px 20px 20px;
+  text-decoration: none;
+  font-size: 20px;
+  color: #fff;
+  transition: 0.3s;
+  display:block;
+}
+
+/* 메뉴 */
+.menu li a {color : black;}
+
+.menu li a i{padding-left:20px;}
+
+.menu li a span{padding-left:20px; font-weight:500;}
+
+/* 미디어 태그 */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 10px;}
+  .sidenav a {font-size: 18px;}
+}
+
+/*승인 버튼*/
+.btn_approve{text-align:right; margin:20px 10px 5px 0px;}
+
+/*체크 박스 css*/
+input[type=checkbox]
+{
+  /* Double-sized Checkboxes */
+  -webkit-transform: scale(1.5);  
+}
+

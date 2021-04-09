@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DAO에서 어떻게 이 mapper를 부를 것인지 namespace 정해줌 -->
+
+<!-- id와 name의 데이터가나옴 -->
+<mapper namespace="Member">
+	<!-- id는 쿼리문을 무엇으로 보낼 것인지 resultType은 결과물이 무엇인지 -->
+	<select id="login" resultType="kr.co.metanet.dto.AccountDTO">
+		select
+			ID_Code,
+			ID,
+			Password,
+			Emp_Code,
+			Certified_YN,
+			ID_Use_YN
+		from
+			tb_account_normal
+		where ID = #{id}
+		and PASSWORD = #{password}
+	</select>
+	
+	<!-- 휴가 신청  -->
+	<insert id="vacationapply">
+		/* 휴가 신청 */
+		insert into tb_vacation_apply
+		values(
+				'VA'||lpad(TO_CHAR(va_code_seq.NEXTVAL),4,'0'),
+				#{apply_Emp_code},
+				(select EMP_UPPER 
+				from tb_Employee 
+				where Emp_Code=#{apply_Emp_code}),
+				sysdate,
+				TO_DATE(#{va_start_date},'YYYY-MM-DD'),
+				TO_DATE(#{va_end_date},'YYYY-MM-DD'),
+				#{va_days_num},
+				#{vk_code},
+				#{va_reason},
+				null,
+				'VS1',
+				null
+				
+		)
+	</insert> 
+	<!-- 휴가 승인 연차 업데이트  -->
+	<update id ="daysmanageUpdate" parameterType="kr.co.metanet.dto.VacationApplyDTO">
+		update TB_VACATION_ANNUAL_MANAGEMENT
+		set	USE_DAYS_NUM = USE_DAYS_NUM + #{va_days_num},
+			RES_DAYS_NUM = RES_DAYS_NUM - #{va_days_num} 
+		where emp_code = #{apply_Emp_code}
+	</update>
+	<!-- 휴가 신청 내역 화면(1) -->
+	<select id = "vacationapplylist" resultType="kr.co.metanet.dto.VacationCommonViewDTO">
+		select c.va_code, a.code_name Vk_Code_Name, TO_CHAR(c.va_start_date,'YYYY-MM-DD') va_start_date, TO_CHAR(c.va_end_date,'YYYY-MM-DD') va_end_date, b.code_name Vs_Code_Name
+		from tb_code a, tb_code b, tb_vacation_apply c
+		where a.code = c.vk_code and b.code = c.vs_code and c.apply_emp_code = #{Emp_code}
+		order by c.va_code desc
+	</select>
+	
+	<!-- 휴가 생성 내역 화면(2) -->
+	<select id = "vacationdaysmanage" resultType="kr.co.metanet.dto.VacationDaysManageDTO">
+		select year, acq_days_num, use_days_num, res_days_num
+		from tb_vacation_annual_management
+		where emp_code = #{Emp_code}
+	</select>
+	
+	
+	<!-- 휴가 신청 승인 화면 -->
+	<select id = "vacationapplyapprove" resultType="kr.co.metanet.dto.VacationCommonViewDTO">
+		select b.va_code, a.name Emp_Name, c.code_name Vk_Code_Name, d.code_name Vs_Code_Name
+		from tb_employee a, tb_vacation_apply b, tb_code c, tb_code d
+		where
+		b.confirm_emp_upper = #{Emp_code} 
+		and a.emp_code = b.apply_emp_code 
+		and b.vk_code = c.code 
+		and b.vs_code = d.code
+		order by va_code
+	</select>
+	
+	<!-- 휴가 신청 승인,신청 내역 세부 정보 화면 -->
+	<select id="vacationapplydetail" resultType="kr.co.metanet.dto.VacationCommonViewDTO">
+		select  
+		a.va_code,
+		a.apply_Emp_code,
+		b.name emp_name,
+		b.emp_rank,
+		f.org_name,
+        d.code_name vk_code_name,
+        e.code_name vs_code_name,
+        c.name upper_Emp_Name,
+        TO_CHAR(a.va_start_date,'YYYY-MM-DD') va_start_date,
+        TO_CHAR(a.va_end_date,'YYYY-MM-DD') va_end_date,
+       	a.vk_code,
+        a.va_reason,
+        TO_CHAR(a.va_reg_date,'YYYY-MM-DD') va_reg_date,
+        TO_CHAR(a.confirm_date,'YYYY-MM-DD') confirm_date,
+        a.rej_reason,
+        a.va_days_num
+    from tb_Vacation_Apply a, tb_employee b, tb_employee c, tb_code d, tb_code e,tb_organization f
+	where a.VA_Code=#{index}
+    and  a.apply_emp_code = b.emp_code 
+    and b.emp_upper = c.emp_code
+    and a.vk_code = d.code
+    and a.vs_code = e.code
+    and b.org_code = f.org_code
+	</select>
+	
+	<!-- 휴가 반려 (1개의 열)  -->
+ 	<update id="test">
+ 		update tb_vacation_apply
+ 		set confirm_date = sysdate, vs_code='VS3', rej_reason=#{rej_reason}  
+ 		where va_code= #{va_code}
+ 	</update>
+
+	<!-- 휴가 승인 (다중 열) -->
+	<update id="vacationapprove">
+  		update tb_vacation_apply
+		set CONFIRM_DATE = sysdate, vs_code='VS2'
+  		where va_code = #{string}
+	</update>
+	
+	<!-- 권한 매핑 -->
+	<select id="authority" resultType="kr.co.metanet.dto.AuthorityDTO">
+    
+	  select hori_aam.id_code as id_code, hori_aam.emp_code as emp_code,
+      	max(hori_aam.AG0001) as AG0001,
+     	max(hori_aam.AG0002) as AG0002
+      from
+      	(
+      		select an.id_code as id_code, an.emp_code as emp_code,
+      		DECODE(aam.ag_code , 'AG0001', aam.aa_use_yn) as AG0001,
+      		DECODE(aam.ag_code , 'AG0002', aam.aa_use_yn) as AG0002
+      		from tb_account_normal an,tb_account_ag_mapping aam
+      		where an.id_code=#{id_code}
+      		and an.id_code = aam.id_code
+      		
+      		) hori_aam
+      		group by hori_aam.id_code, hori_aam.emp_code
+      		order by hori_aam.id_code
+	</select>
+	
+	<!-- 프로필 화면 -->
+	<select id = "profile" resultType="kr.co.metanet.dto.EmployeeDTO">
+		select a.name emp_name, a.emp_code, a.emp_rank, b.org_name, a.gender, a.phone, c.name emp_upper, to_char(a.join_date, 'yyyy-mm-dd') join_date
+		from tb_employee a, tb_organization b, tb_employee c
+		where a.emp_code = #{Emp_code} and a.org_code = b.org_code and a.emp_upper = c.emp_code(+)
+	</select>
+	
+	<!-- 신청 개수 -->
+	<select id = "submit" resultType="int">
+		select count(*) from tb_vacation_apply 
+		where vs_code = 'VS1' 
+		and apply_emp_code = #{Emp_code}
+		and va_reg_date between sysdate - 3 and sysdate
+	</select>
+	
+	<!-- 승인 개수 -->
+	<select id = "approve" resultType="int">
+		select count(*) from tb_vacation_apply 
+		where vs_code = 'VS2' and apply_emp_code = #{Emp_code}
+		and va_reg_date between sysdate - 3 and sysdate
+	</select>
+	
+	<!-- 반려 개수 -->
+	<select id = "reject" resultType="int">
+		select count(*) from tb_vacation_apply 
+		where vs_code = 'VS3' and apply_emp_code = #{Emp_code}
+		and va_reg_date between sysdate - 3 and sysdate
+	</select>
+	
+	<!-- 휴가 승인 대기 -->
+	<select id = "stay" resultType="int">
+		select count(*) from tb_vacation_apply 
+		where vs_code = 'VS1' and confirm_emp_upper = #{Emp_code}
+		and va_reg_date between sysdate - 3 and sysdate
+	</select>
+	<delete id = "delete">
+		DELETE FROM tb_vacation_apply
+		WHERE va_code = #{string}
+	</delete>	
+	
+	<!-- 휴가 수정 -->
+	<update id="applyModify">
+		update tb_vacation_apply
+		set vk_code= #{vk_code}, va_start_date=TO_DATE(#{va_start_date},'YYYY-MM-DD'), va_end_date=TO_DATE(#{va_end_date},'YYYY-MM-DD'), va_days_num=#{va_days_num}, va_reason=#{va_reason} 
+		where va_code = #{va_code}
+	</update>
+</mapper>
+

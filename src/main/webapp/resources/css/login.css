@@ -1,0 +1,18 @@
+.loginform {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 98%;
+    margin: 0 auto;
+	text-align:center; 
+	background:white; 
+	height : 320px; 
+	box-shadow: 5px 5px 5px;
+}
+
+.title{
+	padding: 30px 0px 20px 0px;
+	text-align:center;
+}
+
+.user{
+	padding : 0px 20px 0px 20px;
+}

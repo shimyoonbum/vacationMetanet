@@ -1,0 +1,11 @@
+pom.xml
+root-context.xml
+/.classpath
+/.project
+/.springBeans
+/bin
+/src/main/webapp/resources/vendor/**
+/src/main/webapp/resources/js/jqeury-3.4.1.min.js
+/target
+/.settings
+/git
